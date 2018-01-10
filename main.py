@@ -64,6 +64,7 @@ class Menu():
         self.direct_parent_id = parent_id
         self.parent_ids = parent_ids
         self.child_ids = child_ids
+        self.append_flag = True
 
         # if root:
         if self.direct_parent_id == -1:
@@ -79,9 +80,11 @@ class Menu():
                         self.direct_parent_id == self.parent_ids[-1]) and (len(self.parent_ids) <= 4)
 
 
-        # if there is at least a child
+        # clone child_ids to that it won't change through iteration
         child_ids_clone = self.child_ids[:]
+        # if there is at least a child
         if child_ids_clone:
+            new_child_ids = []
             for child_id in child_ids_clone:
                 if child_id not in (self.parent_ids + [self.id]):
                     child = self.data[child_id - 1]
@@ -92,17 +95,28 @@ class Menu():
                     if 'parent_id' in child:
                         new_child = Menu(child['id'], child['parent_id'], self.parent_ids + [self.id], new_childs, self.data)
 
-                        # add the new children too the root node
-                        self.child_ids.append(new_child.id)
-
                         # if the menu is valid, check if this new child makes it invalid:
                         # if the menu is already invalid, it remains invalid
                         if self.validity:
                             self.validity = new_child.validity
+
+                        # add the new children too the root node if parent_id matches child_id
+                        if new_child.direct_parent_id == self.id:
+                            new_child_ids.append(child_id)
+                        # if not, make the menu invalid
+                        else:
+                            self.validity = False
+
+                        if new_child.append_flag:
+                            new_child_ids += new_child.child_ids
+
+                        self.child_ids = new_child_ids
                     # if the child is root: invalid
                     else:
+                        self.append_flag = False
                         self.validity = False
                 else:
+                    self.append_flag = False
                     self.validity = False
 
 
