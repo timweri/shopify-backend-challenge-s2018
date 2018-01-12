@@ -4,7 +4,13 @@ import urllib
 def main():
     menu_validator = MenuValidator()
     menu_validator.input_from_url("https://backend-challenge-summer-2018.herokuapp.com/challenges.json?id=1", 1)
-    print(menu_validator.result())
+    output("output1.out", menu_validator.result())
+    menu_validator.input_from_url("https://backend-challenge-summer-2018.herokuapp.com/challenges.json?id=2", 1)
+    output("output2.out", menu_validator.result())
+
+def output(filename, data):
+    with open(filename, 'w') as outputfile:
+        json.dump(data, outputfile)
 
 
 class MenuValidator():
