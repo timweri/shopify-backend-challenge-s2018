@@ -5,6 +5,7 @@ def main():
     menu_validator = MenuValidator()
     menu_validator.input_from_url("https://backend-challenge-summer-2018.herokuapp.com/challenges.json?id=1", 1)
     output("main-challenge.out", menu_validator.result())
+    menu_validator.reset()
     menu_validator.input_from_url("https://backend-challenge-summer-2018.herokuapp.com/challenges.json?id=2", 1)
     output("extra-challenge.out", menu_validator.result())
 
@@ -16,6 +17,9 @@ def output(filename, data):
 class MenuValidator():
     def __init__(self):
         self.data = []
+
+    def reset(self):
+        self.__init__()
 
     # load json data from the url
     # page = page number
